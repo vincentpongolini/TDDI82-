@@ -15,11 +15,11 @@
     };*/
 
 List::List()
-    : head{ std::make_unique<Node>() }, tail{}, sz{}
+    : head{ std::make_unique<Node>() }, tail{head.get()}, sz{}
 {
     //head->next = new Node{0, head, nullptr};
     //tail = head->next;
-    tail = head.get();
+    //tail = head.get();
 }
 
 List::List(List const & other)
@@ -47,22 +47,38 @@ List::List(std::initializer_list<int> lst)
 
 void List::push_front(int value)
 {
-    Node * old_first { head->next.get() };
+    head.release();
+    //Node * old_first { head->next.get() };
     head = std::make_unique<Node>(value, nullptr, head.get());
-    old_first->prev = head->next.get();
+    //old_first->prev = head->next.get();
+    if (sz == 0)
+    {
+	tail->prev = head.get();
+    }
+    
     ++sz;
 }
 void List::push_back(int value)
 {
-    Node * old_last { tail->prev };
+    /*Node * old_last { tail->prev };
     old_last->next = std::make_unique<Node>(value, old_last, tail);
-    tail->prev = old_last->next.get();
-    ++sz;
+    tail->prev = old_last->next.get();*/
+    if ( empty() )
+    {
+	push_front(value);
+    }
+    else
+    {
+	tail->prev->next.release();
+	tail->prev->next = std::make_unique<Node>(value, tail->prev, tail);
+	tail->prev = tail->prev->next.get();
+	++sz;
+    }
 }
 
 bool List::empty() const noexcept
 {
-    return head->next.get() == tail;
+    return head.get() == tail;
 }
 
 int List::back() const noexcept
@@ -76,11 +92,11 @@ int & List::back() noexcept
 
 int List::front() const noexcept
 {
-    return head->next->value;
+    return head->value;
 }
 int & List::front() noexcept
 {
-    return head->next->value;
+    return head->value;
 }
 
 int & List::at(int idx)
@@ -91,7 +107,7 @@ int const & List::at(int idx) const
 {
     if (idx >= sz)
         throw std::out_of_range{"Index not found"};
-    Node * tmp {head->next.get()};
+    Node * tmp {head.get()};
     while ( idx > 0 )
     {
         tmp = tmp->next.get();

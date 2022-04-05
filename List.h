@@ -38,7 +38,7 @@ private:
 	    : value{v}, prev{p}, next{n} {}
 	int value {};
 	Node* prev {};
-	std::unique_ptr<List::Node> next {};
+	std::unique_ptr<Node> next {};
     };
 	
     std::unique_ptr<Node> head {};
