@@ -140,3 +140,71 @@ List & List::operator=(List && rhs)& noexcept
     swap(rhs);
     return *this;
 }
+
+//List Iterator ---------------------------------------class i class
+
+List::List_Iterator::List_Iterator(Node* ptr)
+    : curr(ptr) {}
+
+typename List::List_Iterator::reference List::List_Iterator::operator*() const
+{
+    return curr->value;
+}
+
+List::List_Iterator & List::List_Iterator::operator++()
+{
+    if(curr->next != nullptr)
+    {
+        curr = curr->next.get();
+        return *this;
+    }
+}
+
+List::List_Iterator List::List_Iterator::operator++(int)
+{
+    List_Iterator tmp(*this);
+    if(curr->next != null)
+    {
+        curr = curr->next.get();
+        return tmp;
+    }
+}
+
+List::List_Iterator & List::List_Iterator::operator--()
+{
+    if(curr->prev != nullptr)
+    {
+        curr = curr->prev;
+        return *this;
+    }
+}
+
+List::List_Iterator List::List_Iterator::operator--(int)
+{
+    List_Iterator tmp(*this);
+    if(curr-> != nullptr)
+    {
+        curr = curr->prev;
+        return tmp;
+    }
+}
+
+bool List::List_Iterator::operator==(const List_Iterator &rhs) const
+{
+    return curr == rhs.curr;
+}
+
+bool List::List_Iterator::operator!=(const List_Iterator &rhs) const
+{
+    return curr != rhs.curr;
+}
+
+List::List_Iterator List::begin()
+{
+    return List_Iterator(head.get());
+}
+
+List::List_Iterator List::end()
+{
+    return List_Iterator(tail);
+}

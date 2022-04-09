@@ -3,40 +3,79 @@
 
 #include <initializer_list>
 #include <memory>
+#include <iterator>
 
+template<typename T>
 class List
 {
 public:
+    
     List();
     List(List const &);
     List(List &&) noexcept;
-    List(std::initializer_list<int>);
+    List(std::initializer_list<T>);
 
     List & operator=(List const &)&;
     List & operator=(List &&)& noexcept;
 
-    void push_front(int);
-    void push_back(int);
+    void push_front(T);
+    void push_back(T);
 
-    int back() const noexcept;
-    int & back() noexcept;
+    T back() const noexcept;
+    T & back() noexcept;
 
-    int front() const noexcept;
-    int & front() noexcept;
+    T front() const noexcept;
+    T & front() noexcept;
 
-    int & at(int idx);
-    int const & at(int idx) const;
+    T & at(int idx);
+    T const & at(int idx) const;
 
     int size() const noexcept;
     bool empty() const noexcept;
 
     void swap(List & other) noexcept;
+
+//Iterator
+    
+    class List_Iterator
+    {
+
+    public:
+        friend class List;
+        
+        using iterator_category = std::bidirectional_iterator_tag;
+        using value_type = T;
+        using difference_type = T;
+        using reference = T&;
+        using pointer = T*;
+        
+        reference operator*();
+        
+        List_Iterator& operator++();
+        List_Iterator  operator++(int);
+
+        List_Iterator& operator--();
+        List_Iterator  operator--(int);
+
+        bool operator==(const List_Iterator&) const;
+        bool operator!=(const List_Iterator&) const;
+        pointer operator->() const;
+
+    private:
+        List_Iterator();
+        List_Iterator(Node * ptr);
+        Node * curr{};
+    };
+
+    List_Iterator begin() const;
+    List_Iterator end() const;
+    
 private:
     struct Node{
 	Node() = default;
-	Node(int v, Node* p, Node* n)
+	Node(T v, Node* p, Node* n)
 	    : value{v}, prev{p}, next{n} {}
-	int value {};
+	T value {};
 	Node* prev {};
 	std::unique_ptr<Node> next {};
     };
@@ -45,5 +84,6 @@ private:
     Node* tail {};
     int sz {};
 };
+#included "List.tcc"
 
 #endif //LIST_H

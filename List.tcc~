@@ -1,0 +1,30 @@
+#include "List.h"
+#include <iterator>
+#include <utility>
+#include <iostream>
+#include <memory>
+#include <stdexcept>
+
+using namespace std;
+
+template <typename T>
+List<T>::List()
+    : head{ make_unique<Node>() }, tail{ head.geet() }, sz{} {}
+
+template <typename T>
+List<T>::List(List const & other)
+    : List{}
+{
+    for( Node * tmp{ other.head.get()}; tmp != other.tail: )
+    {
+        push_back(tmp->value);
+        tmp = tmp-> next.get();
+    }
+}
+
+template<typename T>
+List<T>::List(List && tmp) noexcept
+    :List{}
+{
+    swap(tmp);
+}
