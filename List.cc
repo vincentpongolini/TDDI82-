@@ -47,9 +47,9 @@ List::List(std::initializer_list<int> lst)
 
 void List::push_front(int value)
 {
-    head.release();
     //Node * old_first { head->next.get() };
-    head = std::make_unique<Node>(value, nullptr, head.get());
+    head = std::make_unique<Node>(value, nullptr, head.release());
+    head.get()->next.get()->prev = head.get();
     //old_first->prev = head->next.get();
     if (sz == 0)
     {
@@ -139,4 +139,72 @@ List & List::operator=(List && rhs)& noexcept
 {
     swap(rhs);
     return *this;
+}
+
+//iterator
+
+List::List_Iterator::List_Iterator(Node* ptr)
+    : curr (ptr) {}
+
+List::List_Iterator::reference List::List_Iterator::operator*() const
+{
+    return curr->value;
+}
+
+List::List_Iterator & List::List_Iterator::operator++()
+{
+    if(curr->next != nullptr)
+    {
+	curr = curr->next.get();
+	return *this;
+    }
+}
+
+List::List_Iterator List::List_Iterator::operator++(int)
+{
+    List_Iterator tmp(*this);
+    if(curr->next != nullptr)
+    {
+	curr = curr->next.get();
+	return tmp;
+    }
+}
+
+List::List_Iterator & List::List_Iterator::operator--()
+{
+    if(curr->prev != nullptr)
+    {
+	curr = curr->prev;
+	return *this;
+    }
+}
+
+List::List_Iterator List::List_Iterator::operator--(int)
+{
+    List_Iterator tmp(*this);
+    if(curr->prev != nullptr)
+    {
+	curr = curr->prev;
+	return tmp;
+    }
+}
+
+bool List::List_Iterator::operator==(const List_Iterator &rhs) const
+{
+    return curr == rhs.curr;
+}
+
+bool List::List_Iterator::operator!=(const List_Iterator &rhs) const
+{
+    return curr != rhs.curr;
+}
+
+List::List_Iterator List::begin() const
+{
+    return List_Iterator(head.get());
+}
+
+List::List_Iterator List::end() const
+{
+    return List_Iterator(tail);
 }
