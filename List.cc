@@ -3,24 +3,13 @@
 #include <utility>
 #include <stdexcept>
 #include <memory>
+#include <iostream>
 
-/*struct List::Node
-{
-    Node() = default;
-    Node(int v, Node* p, Node* n)
-        : value{v}, prev{p}, next{n} {}
-    int value {};
-    Node* prev {};
-    std::unique_ptr<List::Node> next {};
-    };*/
+using namespace std;
 
 List::List()
     : head{ std::make_unique<Node>() }, tail{head.get()}, sz{}
-{
-    //head->next = new Node{0, head, nullptr};
-    //tail = head->next;
-    //tail = head.get();
-}
+{}
 
 List::List(List const & other)
     : List{}
@@ -199,12 +188,12 @@ bool List::List_Iterator::operator!=(const List_Iterator &rhs) const
     return curr != rhs.curr;
 }
 
-List::List_Iterator List::begin()
+List::List_Iterator List::begin() const
 {
     return List_Iterator(head.get());
 }
 
-List::List_Iterator List::end()
+List::List_Iterator List::end() const
 {
     return List_Iterator(tail);
 }
